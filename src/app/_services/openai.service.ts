@@ -1,38 +1,30 @@
-import { Injectable } from '@angular/core';
-import axios from 'axios';
+import {Injectable} from '@angular/core';
+import {Configuration, OpenAIApi} from "openai";
 
 @Injectable({
   providedIn: 'root'
 })
 export class OpenaiService {
-  private apiURL: string = 'https://api.openai.com/v1/engines/davinci-codex/completions';
-  private apiKey: string = 'your_openai_api_key';
+  private openai: OpenAIApi;
+  configuration = new Configuration({
+    // TODO: Add your apikey. https://platform.openai.com/account/api-keys
+    apiKey: "",
+  });
 
-  constructor() {}
+  constructor() {
+    this.openai = new OpenAIApi(this.configuration);
+  }
 
-  async getAnswer(prompt: string): Promise<string> {
-    try {
-      const response = await axios.post(
-        this.apiURL,
-        {
-          prompt: prompt,
-          max_tokens: 50,
-          n: 1,
-          stop: null,
-          temperature: 1.0,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.apiKey}`
-          }
-        }
-      );
-
-      return response.data.choices[0].text.trim();
-    } catch (error) {
-      console.error('Error fetching answer:', error);
-      return 'An error occurred while fetching the answer.';
-    }
+  generateText(prompt: string): Promise<string | undefined> {
+    return this.openai.createCompletion({
+      // Currently gpt-4 is not supported. Signup is available
+      model: "text-davinci-003",
+      prompt: prompt,
+      max_tokens: 256
+    }).then(response => {
+      return response.data.choices[0].text;
+    }).catch(error => {
+      return '';
+    });
   }
 }

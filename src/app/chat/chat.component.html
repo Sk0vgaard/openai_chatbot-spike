@@ -1,8 +1,19 @@
-<div class="chat-container">
-  <h2>Chat with GPT-3</h2>
-  <form (submit)="submitQuestion()">
-    <input [(ngModel)]="userInput" name="userInput" placeholder="Type your question here...">
-    <button type="submit">Submit</button>
-  </form>
-  <p *ngIf="answer">{{ answer }}</p>
+<div class="container mt-5">
+  <h1 class="text-center mb-4">Chat GPT Example</h1>
+  <div class="card mb-3" *ngFor="let data of textList">
+    <div class="card-header">
+      <div class="input-group">
+        <input type="text" [(ngModel)]="data.text" class="form-control" placeholder="Add Your Text Here" (keydown.enter)="generateText(data)">
+        <div class="input-group-append">
+          <button type="button" (click)="generateText(data)" class="btn btn-primary" [disabled]="data.loading">Generate</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="card-text" *ngIf="!data.loading">{{data.response}}</p>
+      <div class="d-flex justify-content-center" *ngIf="data.loading">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+    </div>
+  </div>
 </div>

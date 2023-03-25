@@ -1,7 +1,14 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {OpenaiService} from "../_services/openai.service";
 import {FormsModule} from "@angular/forms";
+
+export class textResponse {
+  sno: number = 1;
+  text: string = '';
+  response: any = '';
+  loading?: boolean = false;
+}
 
 @Component({
   selector: 'app-chat',
@@ -11,14 +18,19 @@ import {FormsModule} from "@angular/forms";
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent {
-  userInput: string = '';
-  answer: string | null = null;
+  textList: textResponse[] = [{sno: 1, text: '', response: ''}];
 
-  constructor(private openaiService: OpenaiService) {}
+  constructor(private openaiService: OpenaiService) {
+  }
 
-  async submitQuestion() {
-    if (this.userInput) {
-      this.answer = await this.openaiService.getAnswer(this.userInput);
-    }
+  generateText(data: textResponse) {
+    data.loading = true; // Set loading to true when starting the request
+    this.openaiService.generateText(data.text).then(text => {
+      data.response = text;
+      data.loading = false; // Set loading to false when the request is complete
+      if (this.textList.length === data.sno) {
+        this.textList.push({sno: 1, text: '', response: ''});
+      }
+    });
   }
 }
