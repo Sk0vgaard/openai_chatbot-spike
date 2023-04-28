@@ -1,4 +1,3 @@
-
 .container {
   display: flex;
   justify-content: center;
@@ -25,10 +24,9 @@
   max-height: 100%; /* Add this line to ensure the messages container does not exceed the card height */
 }
 
-
 .input-container {
   display: flex;
-  align-items: center;
+  margin: 10px;
 }
 
 .input-field {
@@ -60,4 +58,9 @@
 .loading {
   display: flex;
   align-items: center;
+}
+
+button {
+  height: 100%;
+  min-height: 56px;
 }
