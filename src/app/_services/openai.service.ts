@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Configuration, OpenAIApi} from "openai";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ export class OpenaiService {
   private openai: OpenAIApi;
   configuration = new Configuration({
     // TODO: Add your apikey. https://platform.openai.com/account/api-keys
-    apiKey: "",
+    apiKey: environment.openAiApiKey,
   });
 
   constructor() {
