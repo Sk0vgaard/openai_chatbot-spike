@@ -1,19 +1,23 @@
-<div class="container mt-5">
-  <h1 class="text-center mb-4">Chat GPT Example</h1>
-  <div class="card mb-3" *ngFor="let data of textList">
-    <div class="card-header">
-      <div class="input-group">
-        <input type="text" [(ngModel)]="data.text" class="form-control" placeholder="Add Your Text Here" (keydown.enter)="generateText(data)">
-        <div class="input-group-append">
-          <button type="button" (click)="generateText(data)" class="btn btn-primary" [disabled]="data.loading">Generate</button>
+<div class="container">
+  <mat-card class="chat-card">
+    <div class="messages mat-elevation-z4" #messagesContainer>
+      <div *ngFor="let message of messages">
+        <div class="chat-box user-message">
+          <span class="message-label">You:</span>
+          <span class="message-content">{{ message.text }}</span>
+        </div>
+        <div class="chat-box bot-message">
+          <span class="message-label">KirbyGPT:</span>
+          <mat-progress-spinner mode="indeterminate" diameter="20" *ngIf="message.loading"></mat-progress-spinner>
+          <span class="message-content" *ngIf="!message.loading">{{ message.response }}</span>
         </div>
       </div>
     </div>
-    <div class="card-body">
-      <p class="card-text" *ngIf="!data.loading">{{data.response}}</p>
-      <div class="d-flex justify-content-center" *ngIf="data.loading">
-        <div class="spinner-border text-primary" role="status"></div>
-      </div>
+    <div class="input-container">
+      <mat-form-field appearance="outline" class="input-field">
+        <input matInput placeholder="Type your message" [(ngModel)]="userInput" (keydown.enter)="addMessage($event)" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="addMessage($event)">Send</button>
     </div>
-  </div>
+  </mat-card>
 </div>

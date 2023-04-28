@@ -1,36 +1,68 @@
-import {Component} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {OpenaiService} from "../_services/openai.service";
+import {AfterViewChecked, Component, ElementRef, ViewChild} from '@angular/core';
+import { OpenaiService } from "../_services/openai.service";
+import { ChatCompletionRequestMessageRoleEnum } from "openai";
+import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import {MatInputModule} from "@angular/material/input";
+import {MatCardModule} from "@angular/material/card";
+import {MatButtonModule} from "@angular/material/button";
+import {MatLegacyChipsModule} from "@angular/material/legacy-chips";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
-export class textResponse {
-  sno: number = 1;
-  text: string = '';
-  response: any = '';
-  loading?: boolean = false;
+export class Message {
+  text: string;
+  response: string;
+  loading?: boolean;
+
+  constructor(text: string, response: string, loading?: boolean) {
+    this.text = text;
+    this.response = response;
+    this.loading = loading;
+  }
 }
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatInputModule, MatCardModule, MatButtonModule, MatLegacyChipsModule, MatProgressSpinnerModule],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent {
-  textList: textResponse[] = [{sno: 1, text: '', response: ''}];
+export class ChatComponent implements AfterViewChecked {
+  @ViewChild('messagesContainer', { read: ElementRef }) messagesContainer!: ElementRef;
 
-  constructor(private openaiService: OpenaiService) {
+  messages: Message[] = [];
+  userInput: string = '';
+
+  constructor(private openaiService: OpenaiService) {}
+
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
   }
 
-  generateText(data: textResponse) {
-    data.loading = true; // Set loading to true when starting the request
-    this.openaiService.generateText(data.text).then(text => {
-      data.response = text;
-      data.loading = false; // Set loading to false when the request is complete
-      if (this.textList.length === data.sno) {
-        this.textList.push({sno: 1, text: '', response: ''});
-      }
+  scrollToBottom(): void {
+    try {
+      this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Error scrolling to bottom:', err);
+    }
+  }
+
+  addMessage(event: Event) {
+    if (this.userInput.trim() !== '') {
+      const newMessage = new Message(this.userInput, '', true);
+      this.messages.push(newMessage);
+      this.generateText(newMessage);
+      this.userInput = '';
+    }
+  }
+
+  generateText(message: Message) {
+    const prompts = this.messages.map((item: Message) => ({ role: ChatCompletionRequestMessageRoleEnum.User, content: item.text }));
+
+    this.openaiService.createCompletion(prompts).then((text: string) => {
+      message.response = text;
+      message.loading = false;
     });
   }
 }
