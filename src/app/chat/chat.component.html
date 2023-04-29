@@ -14,7 +14,9 @@
             <mat-progress-spinner *ngIf="message.loading" diameter="35" mode="indeterminate"></mat-progress-spinner>
             <span *ngIf="!message.loading" class="message-content">
               <ng-container *ngFor="let content of message.response">
-                <ng-container *ngIf="content.type === 'text'">{{ content.text }}</ng-container>
+                <ng-container *ngIf="content.type === 'text'">
+                  <p class="response-text">{{ content.text }}</p>
+                </ng-container>
                 <ng-container *ngIf="content.type === 'code'">
                   <mat-card class="bot-code-card">
                     <mat-card-header>
