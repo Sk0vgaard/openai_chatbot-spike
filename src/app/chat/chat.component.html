@@ -9,7 +9,17 @@
         <div class="chat-box bot-message">
           <span class="message-label">KirbyGPT:</span>
           <mat-progress-spinner mode="indeterminate" diameter="20" *ngIf="message.loading"></mat-progress-spinner>
-          <span class="message-content" *ngIf="!message.loading">{{ message.response }}</span>
+          <span class="message-content" *ngIf="!message.loading">
+            <ng-container *ngFor="let content of message.response">
+              <ng-container *ngIf="content.type === 'text'">{{ content.text }}</ng-container>
+              <ng-container *ngIf="content.type === 'code'">
+                <button mat-icon-button (click)="copyToClipboard(content.text)" title="Copy to clipboard">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+                <pre><code>{{ content.text }}</code></pre>
+              </ng-container>
+            </ng-container>
+          </span>
         </div>
       </div>
     </div>
@@ -21,3 +31,4 @@
     </div>
   </mat-card>
 </div>
+

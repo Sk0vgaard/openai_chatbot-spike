@@ -64,3 +64,27 @@ button {
   height: 100%;
   min-height: 56px;
 }
+
+.message-content {
+  white-space: pre-line;
+  word-wrap: break-word;
+}
+
+.code {
+  display: inline-block;
+  background-color: #f5f5f5;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  position: relative;
+}
+
+.copy-icon {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 0 4px 0 4px;
+}
